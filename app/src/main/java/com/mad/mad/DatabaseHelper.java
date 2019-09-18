@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class DatabaseHelper  extends SQLiteOpenHelper
 {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
-    private static final String DATABASE_NAME = "USERs.DB";
+    private static final String DATABASE_NAME = "LMS.DB";
 
 
     //Student data
@@ -60,6 +62,37 @@ public class DatabaseHelper  extends SQLiteOpenHelper
     private String DROP_LECT_TABLE = "DROP TABLE IF EXISTS " + TABLE_LECTURER;
 
 
+    //task
+
+    private static final String TABLE_TASK   = "task_Info";
+
+    private static final String COLUMN_TASK_ID = "task_id";
+    private static final String COLUMN_TASK_NAME = "task_name";
+    private static final String COLUMN_TASK_SUBJECT = "task_subject";
+    private static final String COLUMN_TASK_BATCH = "task_batch";
+    private static final String COLUMN_TASK_EMAIL = "task_email";
+
+
+    private String CREATE_TASK_TABLE = "CREATE TABLE " + TABLE_TASK + "("
+            + COLUMN_TASK_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + COLUMN_TASK_NAME + " TEXT," + COLUMN_TASK_SUBJECT + " TEXT,"
+            + COLUMN_TASK_BATCH + " TEXT," + COLUMN_TASK_EMAIL + " TEXT" + ")";
+
+
+
+    private String DROP_TASK_TABLE = "DROP TABLE IF EXISTS " + TABLE_TASK;
+
+
+
+
+
+
+
+
+
+
+
+
     // create
 
     public DatabaseHelper(Context context)
@@ -72,6 +105,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper
     {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_LECT_TABLE);
+        db.execSQL(CREATE_TASK_TABLE);
     }
 
     @Override
@@ -79,6 +113,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper
     {
         db.execSQL(DROP_USER_TABLE);
         db.execSQL(DROP_LECT_TABLE);
+        db.execSQL(DROP_TASK_TABLE);
         onCreate(db);
     }
 
@@ -115,6 +150,21 @@ public class DatabaseHelper  extends SQLiteOpenHelper
         db.insert(TABLE_LECTURER, null, values);
         db.close();
     }
+
+
+    public void addTask(User user)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TASK_NAME, user.getTaskName());
+        values.put(COLUMN_TASK_SUBJECT, user.getTaskSubject());
+        values.put(COLUMN_TASK_BATCH,user.getTaskBatch());
+        values.put(COLUMN_TASK_EMAIL, user.getTaskEmail());
+
+        db.insert(TABLE_TASK, null, values);
+        db.close();
+    }
+
 
 
 
@@ -258,7 +308,7 @@ public class DatabaseHelper  extends SQLiteOpenHelper
 
 
 
-    //student info
+    //student info update
 
     public boolean updateData(String index,String name,String mail,String Phone ,String GPA , String batch) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -272,6 +322,31 @@ public class DatabaseHelper  extends SQLiteOpenHelper
         db.update(TABLE_USER, contentValues, "user_index = ?",new String[] { index });
         return true;
     }
+//student password change
+
+    public boolean updateStuPassword(String index,String password ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_USER_PASSWORD,password);
+
+        db.update(TABLE_USER, contentValues, "user_index = ?",new String[] { index });
+        return true;
+    }
+
+
+
+    //lecturer password change
+
+    public boolean updateLectPassword(String index,String password ) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_LECT_PASSWORD,password);
+
+        db.update(TABLE_LECTURER, contentValues, "lect_index = ?",new String[] { index });
+        return true;
+    }
+
+
 
 
     // Student validations
@@ -432,9 +507,140 @@ public class DatabaseHelper  extends SQLiteOpenHelper
 
 
 
+    // Select Lecturer
+
+    public String getLectName(String index)
+    {
+        String result = "";
+        String[] columns = {
+                COLUMN_LECT_NAME
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = COLUMN_LECT_INDEX + " = ?";
+        String[] selectionArgs = { index };
+
+        Cursor cursor = db.query(TABLE_LECTURER,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+        while (cursor.moveToNext())
+        {
+            result = cursor.getString(cursor.getColumnIndex(COLUMN_LECT_NAME));
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public String getLectMail(String index)
+    {
+        String result = "";
+        String[] columns = {
+                COLUMN_LECT_EMAIL
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = COLUMN_LECT_INDEX + " = ?";
+        String[] selectionArgs = { index };
+
+        Cursor cursor = db.query(TABLE_LECTURER,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+        while (cursor.moveToNext()){
+            result = cursor.getString(cursor.getColumnIndex(COLUMN_LECT_EMAIL));
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+
+
+    //Lect info update
+
+    public boolean updateLectData(String index,String name,String mail) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_LECT_INDEX,index);
+        contentValues.put(COLUMN_LECT_NAME,name);
+        contentValues.put(COLUMN_LECT_EMAIL,mail);
+
+        db.update(TABLE_LECTURER, contentValues, "lect_index = ?",new String[] { index });
+        return true;
+    }
+
+
+
+
+
+    //Select Task
+
+    public ArrayList getTask(String Batch) {
+        ArrayList result =  new ArrayList();
+        String[] columns = {
+                COLUMN_TASK_NAME
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = COLUMN_TASK_BATCH + " = ?";
+        String[] selectionArgs = {Batch};
+
+        Cursor cursor = db.query(TABLE_TASK,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+        while (cursor.moveToNext()) {
+            String r = cursor.getString(cursor.getColumnIndex(COLUMN_TASK_NAME));
+            result.add(r);
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+
+    public String getTaskMail(String task)
+    {
+        String result = "";
+        String[] columns = {
+                COLUMN_TASK_EMAIL
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = COLUMN_TASK_NAME + " = ?";
+        String[] selectionArgs = { task };
+
+        Cursor cursor = db.query(TABLE_TASK,
+                columns,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+
+        while (cursor.moveToNext())
+        {
+            result = cursor.getString(cursor.getColumnIndex(COLUMN_TASK_EMAIL));
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
 
 
 }
+
+
 
 
 

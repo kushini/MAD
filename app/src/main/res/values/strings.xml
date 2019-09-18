@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">MAD</string>
 
+    <string name="accessToken">pk.eyJ1Ijoia3VzaGluaWgiLCJhIjoiY2swZXhmN3piMG1ydzNvbnV6NXkydHdpdyJ9.FrL-Sp78_9CA4VVsqSAEtg</string>
 
-    <string name="error_Index">Enter Index Number</string>
+
+
+<string name="error_Index">Enter Index Number</string>
     <string name="error_valid_Index">Enter Valid Index Number</string>
     <string name="error_password">Enter Password</string>
     <string name="error_name">Enter Name</string>

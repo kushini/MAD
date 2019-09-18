@@ -11,6 +11,10 @@ public class UserActitivity extends AppCompatActivity {
 
     private TextView textViewName;
     private Button buttonProfile;
+    private Button buttonAssign;
+    private Button buttonPassword;
+    private Button buttonLogOut;
+
 
     private DatabaseHelper databaseHelper;
 
@@ -22,16 +26,22 @@ public class UserActitivity extends AppCompatActivity {
         setContentView(R.layout.user);
         getSupportActionBar().hide();
 
-        textViewName =  findViewById(R.id.textViewWelcome);
+        textViewName = (TextView) findViewById(R.id.textViewWelcome);
 
         databaseHelper = new DatabaseHelper(this);
 
         Intent intent = getIntent();
 
+
+
         final String nameFromIntent = getIntent().getStringExtra("INDEX");
-        textViewName.setText("Welcome " + nameFromIntent);
+        String name =  databaseHelper.getName(nameFromIntent);
+        textViewName.setText("Welcome " +  name);
 
         buttonProfile = findViewById(R.id.buttonProfile);
+        buttonAssign = findViewById(R.id.Assign);
+        buttonPassword = findViewById(R.id.password);
+        buttonLogOut = findViewById(R.id.logOut);
 
         buttonProfile.setOnClickListener(new View.OnClickListener()
         {
@@ -52,6 +62,45 @@ public class UserActitivity extends AppCompatActivity {
                 accountsIntent.putExtra("PHONE",phone);
                 accountsIntent.putExtra("GPA",GPA);
                 accountsIntent.putExtra("BATCH",batch);
+                startActivity(accountsIntent);
+            }
+        });
+
+
+        buttonAssign.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                String batch = databaseHelper.getBatch(nameFromIntent);
+
+                Intent accountsIntent = new Intent(UserActitivity.this,ShowAssign.class);
+                accountsIntent.putExtra("BATCH",batch);
+                startActivity(accountsIntent);
+            }
+        });
+
+        buttonPassword.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+
+                Intent accountsIntent = new Intent(UserActitivity.this,ChangePassword.class);
+                accountsIntent.putExtra("INDEX",nameFromIntent);
+                startActivity(accountsIntent);
+            }
+        });
+
+        buttonLogOut.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+
+                Intent accountsIntent = new Intent(UserActitivity.this,MainActivity.class);
                 startActivity(accountsIntent);
             }
         });

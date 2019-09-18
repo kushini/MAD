@@ -23,6 +23,16 @@ public class User
     private String passwordLect;
 
 
+    //task
+
+    private String idTask ;
+    private String nametask;
+    private String subjectTask;
+    private String batchTask;
+    private String emailTask;
+
+
+
 
     //Student
 
@@ -149,6 +159,56 @@ public class User
     {
         this.passwordLect=passwordLect;
     }
+
+
+
+
+
+    //task
+
+    public String getTaskId()
+    {
+        return idTask;
+    }
+    public void setTaskId(String idTask) { this.idTask=idTask; }
+
+
+    public String getTaskName() { return nametask; }
+    public void setTaskName(String nametask)
+    {
+        this.nametask=nametask;
+    }
+
+
+    public String getTaskSubject()
+    {
+        return subjectTask;
+    }
+    public void setTaskSubject(String subjectTask) { this.subjectTask=subjectTask; }
+
+    public String getTaskBatch()
+    {
+        return batchTask;
+    }
+    public void setTaskBatch(String batchTask)
+    {
+        this.batchTask=batchTask;
+    }
+
+
+    public String getTaskEmail()
+    {
+        return emailTask;
+    }
+    public void setTaskEmail(String emailTask)
+    {
+        this.emailTask=emailTask;
+    }
+
+
+
+
+
 
 
 }
